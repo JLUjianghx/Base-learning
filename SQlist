@@ -1,0 +1,51 @@
+# SqList code
+#include <stdio.h>
+
+#define Maxsize 50
+typedef int elem_type;
+
+typedef  struct{
+    elem_type data[Maxsize];
+    int length;//顺序表长度
+}sqList;
+bool elem_insert(sqList &s,int i,elem_type element){
+    if(i<1 || i>s.length+1){
+        return false;
+    }
+    if(Maxsize==s.length){
+        printf("no free space\n");
+        return false;
+    }
+    for(int j=s.length;j>=i;j--){
+
+        s.data[j]=s.data[j-1];
+
+    }
+    s.length++;
+    s.data[i-1]=element;
+    return true;
+}
+void Print(sqList s){
+    for(int i =0;i<s.length;i++){
+        printf("%3d ",s.data[i]);
+
+    }
+    printf("\n");
+}
+int main() {
+
+    sqList s;
+    int ret;//判断
+    s.data[0]=10;//设置
+    s.data[1]=20;
+    s.data[2]=30;
+    s.length=3;
+    ret = elem_insert(s,2,60);//插入函数
+    if(ret){
+        printf("insert is successful\n");
+        Print(s);
+    }else{
+        printf("insert is not successful");
+    }
+    return 0;
+}
