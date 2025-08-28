@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include<stdlib.h>
+
+//通过链表实现循环队列
+
+typedef struct Lnode{
+    int data;
+    struct Lnode *next;
+}LNODE,*link_list;
+
+
+
+
+//入队
+void enQueue(link_list front,link_list &rear,int x){
+    link_list pnew;
+    if(rear->next==front){
+        pnew=(link_list) malloc(sizeof (Lnode));
+        rear->data=x;
+        pnew->next=front;
+        rear->next=pnew;
+        rear=pnew;
+    } else{
+        rear->data=x;
+        rear=rear->next;
+    }
+
+}
+
+//出队
+void deQueue(link_list &front,link_list rear,int x){
+
+    if(front==rear){
+        printf("queue is empty\n");
+
+    }else{
+        x=front->data;
+        printf("dequeue is %d\n",x);
+        front=front->next;
+
+    }
+}
+
+
+//获取循环队列
+void CircleQueue(link_list &front,link_list &rear){
+
+    front=(link_list) malloc(sizeof (Lnode));
+    rear=front;
+    rear->next=front;
+    int x,y,z;
+
+    enQueue(front,rear,1);
+    enQueue(front,rear,2);
+   // enQueue(front,rear,3);
+    //enQueue(front,rear,4);
+
+    deQueue(front,rear,x);
+    deQueue(front,rear,y);
+    deQueue(front,rear,z);
+
+}
+
+
+
+
+int main() {
+    link_list front,rear;
+    CircleQueue(front,rear);
+
+    return 0;
+}
