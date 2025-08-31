@@ -1,0 +1,77 @@
+# linkqueue code
+#include <stdio.h>
+#include<stdlib.h>
+
+//队列（通过链表实现）
+typedef struct link_node{
+    int data;
+    link_node *next;
+
+}link_node;
+typedef struct{
+    link_node *front,*rear;
+}link_queue;
+
+//初始化
+void init_link_queue(link_queue &q){
+    q.front=q.rear=(link_node *) malloc(sizeof (link_node));
+    q.front->next= nullptr;
+}
+
+//判空
+bool isEmppty(link_queue q){
+    if(q.front==q.rear){
+        return true;
+    }
+    return false;
+}
+
+//入队
+void enQueue(link_queue &q,int x){
+    link_node *s=(link_node *) malloc(sizeof (link_node));
+    s->data=x;
+    s->next= nullptr;
+    q.rear->next=s;
+    q.rear=s;
+}
+
+//出队
+bool deQueue(link_queue &q,int &x){
+    if(q.rear==q.front){
+        return false;
+    }
+    link_node *p;
+    p=q.front->next;
+    x=p->data;
+    q.front->next=p->next;
+    if(p==q.rear){
+        q.rear=q.front;//很重要，队列只剩一个元素的时候
+        return false;
+    }
+    free(p);
+    return true;
+}
+
+int main() {
+
+    link_queue q;
+    bool ret;
+    init_link_queue(q);
+
+    enQueue(q,1);
+    enQueue(q,2);
+    enQueue(q,3);
+    enQueue(q,4);
+    enQueue(q,5);
+
+    int x;
+    ret= deQueue(q,x);
+    if(ret){
+        printf("delete linkqueue success %d\n",x);
+    }
+    else{
+        printf("delde fail\n");
+    }
+
+    return 0;
+}
