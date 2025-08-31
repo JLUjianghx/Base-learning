@@ -1,0 +1,160 @@
+#include <stdio.h>
+#include<stdlib.h>
+
+typedef struct BiTnode{
+    char c;
+    BiTnode *lchild;
+    BiTnode *rchild;
+
+}BiTnode,*Bitree;
+
+typedef struct tag{
+    Bitree p;
+    struct tag *next;
+
+}tag_t,*ptag_t;
+//前序遍历
+void PreOrder(Bitree p){
+    if(p!= nullptr){
+        putchar(p->c);
+        PreOrder(p->lchild);
+        PreOrder(p->rchild);
+    }
+}
+
+//中序遍历
+void InOrder(Bitree p){
+    if(p!= nullptr){
+        InOrder(p->lchild);
+        putchar(p->c);
+        InOrder(p->rchild);
+
+    }
+}
+
+//后序遍历
+void PosOrder(Bitree p){
+    if(p!= nullptr){
+        PosOrder(p->lchild);
+        PosOrder(p->rchild);
+        putchar(p->c);
+    }
+}
+
+//层序遍历
+//通过队列（通过链表实现）
+typedef struct link_node{
+    Bitree data;
+    link_node *next;
+
+}link_node;
+typedef struct{
+    link_node *front,*rear;
+}link_queue;
+
+//初始化
+void init_link_queue(link_queue &q){
+    q.front=q.rear=(link_node *) malloc(sizeof (link_node));
+    q.front->next= nullptr;
+}
+
+//判空
+bool isEmpty(link_queue q){
+    if(q.front==q.rear){
+        return true;
+    }
+    return false;
+
+}
+
+
+//入队
+void enQueue(link_queue &q,Bitree x){
+    link_node *s=(link_node *) malloc(sizeof (link_node));
+    s->data=x;
+    s->next= nullptr;
+    q.rear->next=s;
+    q.rear=s;
+
+}
+
+
+//出队
+bool deQueue(link_queue &q,Bitree &x){
+    if(q.rear==q.front){
+        return false;
+    }
+    link_node *p;
+    p=q.front->next;
+    x=p->data;
+    q.front->next=p->next;
+    if(p==q.rear){
+        q.rear=q.front;//队列只剩一个元素，要重置尾指针
+        return false;
+    }
+    free(p);
+    return true;
+
+}
+
+
+//层序遍历
+void LevelOrder(Bitree T){
+    link_queue q;
+    init_link_queue(q);
+    Bitree p;//用来出队接受
+    enQueue(q,T);
+    while(!isEmpty(q)){
+        deQueue(q,p);
+        putchar(p->c);
+        if(p->lchild!= nullptr){
+            enQueue(q,p->lchild);
+        }
+        if(p->rchild!= nullptr){
+            enQueue(q,p->rchild);
+        }
+    }
+
+}
+
+int main() {
+    Bitree tree= nullptr;//树根
+    char c;
+    ptag_t phead= nullptr,ptail= nullptr,listpnew= nullptr,pcur= nullptr;
+    while(scanf("%c",&c)) {
+        if(c=='\n'){
+            break;
+        }
+        Bitree pnew = (Bitree) calloc(1, sizeof(BiTnode));//树申请空间
+        pnew->c=c;
+        listpnew =(ptag_t) calloc(1,sizeof (tag_t));//队列申请空间
+        listpnew->p=pnew;
+        if(tree== nullptr){
+            tree=pnew;
+            phead=listpnew;
+            ptail=listpnew;
+            pcur=listpnew;
+            continue;
+        }else{
+            ptail->next=listpnew;//把新节点放入队列,建立连接
+            ptail=listpnew;//尾指针指向新结点
+        }
+        if(pcur->p->lchild== nullptr){
+            pcur->p->lchild=pnew;
+
+        } else if(pcur->p->rchild== nullptr){
+            pcur->p->rchild=pnew;
+            pcur=pcur->next;
+        }
+
+    }
+    PreOrder(tree);
+    printf("\n---------------------\n");
+    InOrder(tree);
+    printf("\n---------------------\n");
+    PosOrder(tree);
+    printf("\n---------------------\n");
+    LevelOrder(tree);
+
+    return 0;
+}
